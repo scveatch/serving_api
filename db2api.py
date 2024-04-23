@@ -52,3 +52,43 @@ def movies_by_page(page):
         res = con.execute(text(query), {'off': 50*int(page)})
         return [r._asdict() for r in res]
 
+#Return all data on weather
+#@app.get(...)
+def all_weather:
+    with eng.connect() as con:
+        query = """
+                SELECT * FROM weather_rdb AS w
+                JOIN weather_specifics AS ws
+                ON w.weather_description = ws.weather_description;
+                """
+        #res = con.execute(text(query))
+        #return[r._asdict() for r in res]
+
+
+#Return all data on traffic incidents
+#@app.get(...)
+def all_incidents:
+    with eng.connect() as con:
+        query = """
+                SELECT * FROM incidents;
+                """
+        #res = con.execute(text(query))
+        #return[r._asdict() for r in res]
+
+
+#Return all data for given city
+#@app.get(...)
+def all_by_city(city):
+    with eng.connect() as con:
+        query = """
+                SELECT * FROM incidents AS i
+                JOIN weather_rdb AS w
+                ON --CONDITION
+                JOIN weather_specifics AS ws
+                ON w.weather_description=ws.weather_description
+                WHERE w.city_name==(city)::VARCHAR;
+                """
+    #res = con.execute(text(query))
+    #return[r._asdict() for r in res]
+
+
