@@ -54,7 +54,7 @@ def movies_by_page(page):
 
 #Return all data on weather
 #@app.get(...)
-def all_weather:
+def all_weather():
     with eng.connect() as con:
         query = """
                 SELECT * FROM weather_rdb AS w
@@ -67,7 +67,7 @@ def all_weather:
 
 #Return all data on traffic incidents
 #@app.get(...)
-def all_incidents:
+def all_incidents():
     with eng.connect() as con:
         query = """
                 SELECT * FROM incidents;
