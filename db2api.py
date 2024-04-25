@@ -53,16 +53,14 @@ def movies_by_page(page):
         return [r._asdict() for r in res]
 
 #Return all data on weather
-#@app.get(...)
+@app.get("/weather")
 def all_weather():
     with eng.connect() as con:
         query = """
-                SELECT * FROM weather_rdb AS w
-                JOIN weather_specifics AS ws
-                ON w.weather_description = ws.weather_description;
+                SELECT * FROM processed_weather;
                 """
-        #res = con.execute(text(query))
-        #return[r._asdict() for r in res]
+        res = con.execute(text(query))
+        return [dict(row) for row in res]
 
 
 #Return all data on traffic incidents
