@@ -51,14 +51,14 @@ def all_weather():
 
 
 #Return all data on traffic incidents
-#@app.get(...)
+@app.get("/incidents")
 def all_incidents():
     with eng.connect() as con:
         query = """
                 SELECT * FROM incidents;
                 """
-        #res = con.execute(text(query))
-        #return[r._asdict() for r in res]
+        res = con.execute(text(query))
+        return[r._asdict() for r in res]
 
 
 #Return all data for given city
@@ -75,8 +75,8 @@ async def all_by_city(city):
                 JOIN processed_weather AS w
                 ON i.incident_id = w.id
                 JOIN weather_specifics AS ws
-                ON w.weather_description = ws.weather_description
-                WHERE w.city_name = :city;
+                ON w.weather_id = ws.weather_id
+                WHERE w.city_name = INITCAP(:city);
                 """
         res = con.execute(text(query), city=city)
         return [dict(row) for row in res]
