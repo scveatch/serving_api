@@ -63,7 +63,7 @@ def all_incidents():
 
 #Return all data for given city
 @app.get("/all_by_city/{city}")
-def all_by_city(city):
+async def all_by_city(city):
     allowed_cities = ['eugene', 'salem', 'portland']
     if city.lower() not in allowed_cities:
         return {'error': f'City must be one of {", ".join(allowed_cities)}'}
