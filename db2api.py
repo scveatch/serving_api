@@ -39,19 +39,6 @@ with open("endpoints.yaml") as f:
 # Custom Endpoints
 #------------------------------------------------
 
-@app.get("/movies/{page}")
-def movies_by_page(page):
-     with eng.connect() as con:
-        query = """
-                SELECT *
-                FROM movies
-                ORDER BY index
-                LIMIT 50
-                OFFSET :off
-                """
-        res = con.execute(text(query), {'off': 50*int(page)})
-        return [r._asdict() for r in res]
-
 #Return all data on weather
 @app.get("/weather")
 def all_weather():
@@ -75,18 +62,23 @@ def all_incidents():
 
 
 #Return all data for given city
-#@app.get(...)
+@app.get("/all_by_city/{city}")
 def all_by_city(city):
+    allowed_cities = ['eugene', 'salem', 'portland']
+    if city.lower() not in allowed_cities:
+        return {'error': f'City must be one of {", ".join(allowed_cities)}'}
+    
     with eng.connect() as con:
         query = """
-                SELECT * FROM incidents AS i
-                JOIN weather_rdb AS w
-                ON --CONDITION
+                SELECT i.*, w.*, ws.*
+                FROM incidents AS i
+                JOIN processed_weather AS w
+                ON i.incident_id = w.id
                 JOIN weather_specifics AS ws
-                ON w.weather_description=ws.weather_description
-                WHERE w.city_name==(city)::VARCHAR;
+                ON w.weather_description = ws.weather_description
+                WHERE w.city_name = :city;
                 """
-    #res = con.execute(text(query))
-    #return[r._asdict() for r in res]
+        res = con.execute(text(query), city=city)
+        return [dict(row) for row in res]
 
 
