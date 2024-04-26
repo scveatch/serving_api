@@ -44,7 +44,10 @@ with open("endpoints.yaml") as f:
 def all_weather():
     with eng.connect() as con:
         query = """
-                SELECT * FROM processed_weather;
+                SELECT pw.*, ws.*
+                FROM processed_weather pw
+                JOIN weather_specifics ws
+                ON pw.weather_id = ws.weather_id;
                 """
         res = con.execute(text(query))
         return [dict(row) for row in res]
@@ -55,7 +58,10 @@ def all_weather():
 def all_incidents():
     with eng.connect() as con:
         query = """
-                SELECT * FROM incidents;
+                SELECT m.*, i.*, tt.*
+                FROM main m
+                JOIN incidents i ON m.id = i.incident_id
+                JOIN traffic_type tt ON i.traffic_id = tt.traffic_id;
                 """
         res = con.execute(text(query))
         return[r._asdict() for r in res]
